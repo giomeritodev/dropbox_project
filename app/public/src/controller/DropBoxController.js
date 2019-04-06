@@ -18,9 +18,52 @@ class DropBoxController{
         });
 
         this.inputFilesEl.addEventListener('change', event =>{
-            console.log(event.target.files);
+            //lista de arquivos para tranferencia
+            this.uploadTask(event.target.files);
+
+            //Mostra o snackbar arquivos selecionados para transferencia
             this.snackModalEl.style.display = 'block';
         });
+    }
+
+    //Array para permitir selecionar mais de um arquivo
+    uploadTask(files){
+        
+        let promises = [];
+
+        //Converte de uma colecao de dados para um array
+        [...files].forEach(file =>{
+
+            promises.push(new Promise((resolve, reject) => {
+
+                let ajax = new XMLHttpRequest();
+
+                ajax.open('POST', '/upload');
+
+                ajax.onload = event => {
+                    try {
+                        resolve(JSON.parse(ajax.responseText));
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+
+                ajax.onerror = event => {
+                    reject(event);
+                };
+
+                let formData = new FormData();
+
+                //junta os elementos
+                formData.append('input-file', file);
+                
+                //envia a solicitacao
+                ajax.send(formData);
+
+            }));
+        });
+
+        return Promise.all(promises);
     }
 
 }

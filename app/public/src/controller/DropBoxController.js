@@ -17,7 +17,7 @@ class DropBoxController{
 
         });
 
-        this.inputFilesEl.addEventListener('change', event =>{
+        this.inputFilesEl.addEventListener('change', event => {
             //lista de arquivos para tranferencia
             this.uploadTask(event.target.files);
 
